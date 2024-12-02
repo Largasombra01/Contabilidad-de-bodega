@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contabilidad de Productos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      color: #333;
+    }
+
+    input[type="number"], input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin: 4px 0;
+      box-sizing: border-box;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+
+    .totals {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .totals table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .totals td {
+      padding: 8px;
+      text-align: center;
+    }
+
+    .totals input[type="text"] {
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .action-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .details {
+      margin-top: 40px;
+    }
+
+    .details h2 {
+      text-align: center;
+    }
+
+    /* Estilo para la lista de autocompletado */
+    .autocomplete-suggestions {
+      border: 1px solid #ddd;
+      max-height: 150px;
+      overflow-y: auto;
+      position: absolute;
+      background-color: white;
+      width: 100%;
+      z-index: 100;
+    }
+
+    .autocomplete-suggestions div {
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .autocomplete-suggestions div:hover {
+      background-color: #f2f2f2;
+    }
+  </style>
+  <script src="https://cdn.sheetjs.com/xlsx-latest/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Contabilidad del Mes</h1>
+    
+    <table id="productTable">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Cajas</th>
+          <th>Total Productos</th>
+          <th>Total Cajas</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="text" class="code" placeholder="Código" oninput="autoCompleteCode(this)"></td>
+          <td><input type="text" class="product" placeholder="Producto"></td>
+          <td><input type="number" class="quantity" placeholder="Cantidad" min="0" oninput="updateTotals()"></td>
+          <td><input type="number" class="boxes" placeholder="Cajas" min="0" oninput="updateTotals()"></td>
+          <td class="totalProducts">0</td>
+          <td class="totalBoxes">0</td>
+          <td><button class="btn delete" onclick="deleteRow(this)">Eliminar</button></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button class="btn" onclick="addRow()">Agregar Producto</button>
+
+    <div class="totals">
+      <h2>Totales y Pallets</h2>
+      <table>
+        <tr>
+          <td><strong>Total Productos:</strong> <span id="totalProducts">0</span></td>
+          <td><strong>Total Cajas:</strong> <span id="totalBoxes">0</span></td>
+          <td>
+            <strong>Pallet:</strong> 
+            <input type="text" id="palletName" placeholder="Nombre del Pallet" value="Pallet 1">
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Detalle Detallado -->
+    <div class="details">
+      <h2>Detalle Detallado</h2>
+      <table id="detailsTable">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Cantidad de Cajas</th>
+            <th>Total de Productos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Detalles se llenan automáticamente -->
+        </tbody>
+      </table>
+      <h6><!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contabilidad de Productos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      color: #333;
+    }
+
+    input[type="number"], input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin: 4px 0;
+      box-sizing: border-box;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+
+    .totals {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .totals table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .totals td {
+      padding: 8px;
+      text-align: center;
+    }
+
+    .totals input[type="text"] {
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .action-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .details {
+      margin-top: 40px;
+    }
+
+    .details h2 {
+      text-align: center;
+    }
+
+    @media print {
+      /* Ocultar botones en la impresión */
+      .btn, .action-buttons {
+        display: none;
+      }
+
+      /* Mostrar marca al final de la impresión */
+      .print-footer {
+        position: fixed;
+        bottom: 0;
+        text-align: center;
+        font-size: 12px;
+        color: #888;
+        width: 100%;
+      }
+    }
+
+    .print-footer {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Contabilidad de Productos</h1>
+    <!-- Resto del contenido como en el código original -->
+    <div class="print-footer">
+      Hecho por Marcos Castillo
+    </div>
+  </div>
+  <script>
+    // Puedes añadir tus scripts aquí si necesitas lógica adicional
+  </script>
+</body>
+</html>
+<h6>© 2024 2027 Marcos Castillo,. · </h6>
+    </div>
+
+    <!-- Botones para Imprimir y Guardar PDF -->
+    <div class="action-buttons">
+      <button class="btn" onclick="printPage()">Imprimir</button>
+      <button class="btn" onclick="saveToPDF()">Guardar como PDF</button>
+    </div>
+  </div>
+
+  <script>
+    const productCodes = []; // Array para almacenar los códigos de productos
+
+    // Función para agregar una nueva fila en la tabla
+    function addRow() {
+      const table = document.getElementById('productTable').getElementsByTagName('tbody')[0];
+      const newRow = table.insertRow();
+      newRow.innerHTML = `
+        <td><input type="text" class="code" placeholder="Código" oninput="autoCompleteCode(this)"></td>
+        <td><input type="text" class="product" placeholder="Producto"></td>
+        <td><input type="number" class="quantity" placeholder="Cantidad" min="0" oninput="updateTotals()"></td>
+        <td><input type="number" class="boxes" placeholder="Cajas" min="0" oninput="updateTotals()"></td>
+        <td class="totalProducts">0</td>
+        <td class="totalBoxes">0</td>
+        <td><button class="btn delete" onclick="deleteRow(this)">Eliminar</button></td>
+      `;
+    }
+
+    // Función para eliminar una fila
+    function deleteRow(button) {
+      const row = button.parentElement.parentElement;
+      row.remove();
+      updateTotals();
+    }
+
+    // Función para actualizar los totales y el detalle detallado
+    function updateTotals() {
+      let totalProducts = 0;
+      let totalBoxes = 0;
+
+      const rows = document.getElementById('productTable').getElementsByTagName('tbody')[0].rows;
+      const detailsTable = document.getElementById('detailsTable').getElementsByTagName('tbody')[0];
+      detailsTable.innerHTML = ''; // Limpiar detalles previos
+
+      for (let row of rows) {
+        const code = row.querySelector('.code').value || 'N/A';
+        const quantity = parseInt(row.querySelector('.quantity').value) || 0;
+        const boxes = parseInt(row.querySelector('.boxes').value) || 0;
+
+        totalProducts += quantity;
+        totalBoxes += boxes;
+
+        // Agregar a la tabla de detalles
+        const detailRow = detailsTable.insertRow();
+        detailRow.innerHTML = `
+          <td>${code}</td>
+          <td>${boxes}</td>
+          <td>${quantity}</td>
+        `;
+      }
+
+      document.getElementById('totalProducts').textContent = totalProducts;
+      document.getElementById('totalBoxes').textContent = totalBoxes;
+    }
+
+    // Función de autocompletado de códigos
+    function autoCompleteCode(input) {
+      const code = input.value;
+      const suggestionsDiv = document.createElement('div');
+      suggestionsDiv.classList.add('autocomplete-suggestions');
+
+      // Filtrar los códigos que coinciden con el texto escrito
+      const filteredCodes = productCodes.filter(codeItem => codeItem.toLowerCase().startsWith(code.toLowerCase()));
+
+      if (filteredCodes.length > 0) {
+        // Mostrar las sugerencias
+        filteredCodes.forEach(suggestedCode => {
+          const suggestion = document.createElement('div');
+          suggestion.textContent = suggestedCode;
+          suggestion.onclick = function () {
+            input.value = suggestedCode; // Setear el valor del input al código sugerido
+            suggestionsDiv.remove(); // Quitar las sugerencias después de hacer clic
+          };
+          suggestionsDiv.appendChild(suggestion);
+        });
+
+        input.parentElement.appendChild(suggestionsDiv);
+      }
+
+      // Si no hay sugerencias, eliminar cualquier lista existente
+      if (code === '' || filteredCodes.length === 0) {
+        const existingSuggestions = document.querySelectorAll('.autocomplete-suggestions');
+        existingSuggestions.forEach(suggestionDiv => suggestionDiv.remove());
+      }
+      
+      // Agregar el código al array de productos si no existe
+      if (code && !productCodes.includes(code)) {
+        productCodes.push(code);
+      }
+    }
+
+    // Función para guardar como PDF
+    function saveToPDF() {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF();
+      const margin = 10;
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      let currentHeight = margin;
+
+      // Agregar título
+      pdf.setFontSize(16);
+      pdf.text('Resumen de Contabilidad', pageWidth / 2, currentHeight, { align: 'center' });
+      currentHeight += 10;
+
+      // Totales y Pallets
+      pdf.setFontSize(12);
+      pdf.text('Totales y Pallets:', margin, currentHeight);
+      currentHeight += 10;
+
+      const totalProducts = document.getElementById('totalProducts').textContent;
+      const totalBoxes = document.getElementById('totalBoxes').textContent;
+      const palletName = document.getElementById('palletName').value || 'Sin Pallet';
+
+      const totalsData = [
+        ['Total Productos', totalProducts],
+        ['Total Cajas', totalBoxes],
+        ['Pallet', palletName]
+      ];
+
+      totalsData.forEach(([key, value]) => {
+        pdf.text(`${key}: ${value}`, margin, currentHeight);
+        currentHeight += 10;
+      });
+
+      // Detalle Detallado
+      currentHeight += 10;
+      pdf.text('Detalle Detallado:', margin, currentHeight);
+      currentHeight += 10;
+
+      const detailsTable = document.getElementById('detailsTable');
+      const rows = detailsTable.getElementsByTagName('tbody')[0].rows;
+
+      // Dibujar encabezados
+      const headers = ['Código', 'Cantidad de Cajas', 'Total de Productos'];
+      const colWidth = pageWidth / headers.length;
+
+      headers.forEach((header, index) => {
+        pdf.text(header, margin + index * colWidth, currentHeight);
+      });
+      currentHeight += 10;
+
+      // Dibujar datos
+      for (let row of rows) {
+        const cells = row.getElementsByTagName('td');
+        for (let i = 0; i < cells.length; i++) {
+          pdf.text(cells[i].textContent, margin + i * colWidth, currentHeight);
+        }
+        currentHeight += 10;
+
+        // Si excede la página, agrega una nueva
+        if (currentHeight > pdf.internal.pageSize.getHeight() - margin) {
+          pdf.addPage();
+          currentHeight = margin;
+        }
+      }
+
+      // Guardar PDF
+      pdf.save('detalle_contabilidad.pdf');
+    }
+
+    // Función para imprimir la página
+    function printPage() {
+      window.print();
+    }
+
+    updateTotals();
+  </script>
+</body>
+</html>
